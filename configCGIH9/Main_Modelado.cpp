@@ -15,12 +15,23 @@
 // Shaders
 #include "Shader.h"
 
+void Inputs(GLFWwindow *window);
+
+
 const GLint WIDTH = 800, HEIGHT = 600;
+float movX=0.0f;
+float movY=0.0f;
+float movZ=-5.0f;
+float rot = 0.0f;
+
+float rx= 0.0f;
+float ry= 0.0f;
+float rz= 0.0f;
 
 
 int main() {
 	glfwInit();
-	//Verificaciï¿½n de compatibilidad 
+	//Verificación de compatibilidad 
 	// Set all the required options for GLFW
 	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -29,13 +40,13 @@ int main() {
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Proyecciones y transformaciones basicas", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Modelado geometrico", nullptr, nullptr);
 
 	int screenWidth, screenHeight;
 
 	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
 
-	//Verificaciï¿½n de errores de creacion  ventana
+	//Verificación de errores de creacion  ventana
 	if (nullptr == window)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -47,7 +58,7 @@ int main() {
 	glfwMakeContextCurrent(window);
 	glewExperimental = GL_TRUE;
 
-	//Verificaciï¿½n de errores de inicializaciï¿½n de glew
+	//Verificación de errores de inicialización de glew
 
 	if (GLEW_OK != glewInit()) {
 		std::cout << "Failed to initialise GLEW" << std::endl;
@@ -72,54 +83,10 @@ int main() {
 
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
-	// use with Orthographic Projection
 
-	//GLfloat vertices[] = {
- //      -0.5f*500, -0.5f, 0.5f, 1.0f, 0.0f,0.0f,//Front
-	//	0.5f * 500, -0.5f * 500, 0.5f * 500,  1.0f, 0.0f,0.0f,
-	//	0.5f * 500,  0.5f * 500, 0.5f * 500,  1.0f, 0.0f,0.0f,
-	//	0.5f * 500,  0.5f * 500, 0.5f * 500,  1.0f, 0.0f,0.0f,
-	//	-0.5f * 500,  0.5f * 500, 0.5f * 500, 1.0f, 0.0f,0.0f,
-	//	-0.5f * 500, -0.5f * 500, 0.5f * 500, 1.0f, 0.0f,0.0f,
-	//	
-	//    -0.5f * 500, -0.5f * 500,-0.5f * 500, 0.0f, 1.0f,0.0f,//Back
-	//	 0.5f * 500, -0.5f * 500,-0.5f * 500, 0.0f, 1.0f,0.0f,
-	//	 0.5f * 500,  0.5f * 500,-0.5f * 500, 0.0f, 1.0f,0.0f,
-	//	 0.5f * 500,  0.5f * 500,-0.5f * 500, 0.0f, 1.0f,0.0f,
-	//    -0.5f * 500,  0.5f * 500,-0.5f * 500, 0.0f, 1.0f,0.0f,
-	//    -0.5f * 500, -0.5f * 500,-0.5f * 500, 0.0f, 1.0f,0.0f,
-	//	
-	//	 0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 0.0f,1.0f,
-	//	 0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 0.0f,1.0f,
-	//	 0.5f * 500,  0.5f * 500, -0.5f * 500,  0.0f, 0.0f,1.0f,
-	//	 0.5f * 500,  0.5f * 500, -0.5f * 500,  0.0f, 0.0f,1.0f,
-	//	 0.5f * 500,  0.5f * 500,  0.5f * 500,  0.0f, 0.0f,1.0f,
-	//	 0.5f * 500,  -0.5f * 500, 0.5f * 500, 0.0f, 0.0f,1.0f,
- //     
-	//	-0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 1.0f,0.0f,
-	//	-0.5f * 500,  0.5f * 500, -0.5f * 500,  1.0f, 1.0f,0.0f,
-	//	-0.5f * 500, -0.5f * 500, -0.5f * 500,  1.0f, 1.0f,0.0f,
-	//	-0.5f * 500, -0.5f * 500, -0.5f * 500,  1.0f, 1.0f,0.0f,
-	//	-0.5f * 500, -0.5f * 500,  0.5f * 500,  1.0f, 1.0f,0.0f,
-	//	-0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 1.0f,0.0f,
-	//	
-	//	-0.5f * 500, -0.5f * 500, -0.5f * 500, 0.0f, 1.0f,1.0f,
-	//	0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 1.0f,1.0f,
-	//	0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 1.0f,1.0f,
-	//	0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 1.0f,1.0f,
-	//	-0.5f * 500, -0.5f * 500,  0.5f * 500, 0.0f, 1.0f,1.0f,
-	//	-0.5f * 500, -0.5f * 500, -0.5f * 500, 0.0f, 1.0f,1.0f,
-	//	
-	//	-0.5f * 500,  0.5f * 500, -0.5f * 500, 1.0f, 0.2f,0.5f,
-	//	0.5f * 500,  0.5f * 500, -0.5f * 500,  1.0f, 0.2f,0.5f,
-	//	0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.2f,0.5f,
-	//	0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.2f,0.5f,
-	//	-0.5f * 500,  0.5f * 500,  0.5f * 500, 1.0f, 0.2f,0.5f,
-	//	-0.5f * 500,  0.5f * 500, -0.5f * 500, 1.0f, 0.2f,0.5f,
-	//};
-	//
+	
 
-	 //use with Perspective Projection
+	// use with Perspective Projection
 	float vertices[] = {
 		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f,0.0f,//Front
 		0.5f, -0.5f, 0.5f,  1.0f, 0.0f,0.0f,
@@ -200,10 +167,12 @@ int main() {
 	
 	glm::mat4 projection=glm::mat4(1);
 
-	projection = glm::perspective(45.0f, (GLfloat)screenWidth / (GLfloat)screenHeight, 0.1f, 100.0f);//FOV, Radio de aspecto,znear,zfar
+	projection = glm::perspective(glm::radians(45.0f), (GLfloat)screenWidth / (GLfloat)screenHeight, 0.1f, 100.0f);//FOV, Radio de aspecto,znear,zfar
 	//projection = glm::ortho(0.0f, (GLfloat)screenWidth, 0.0f, (GLfloat)screenHeight, 0.1f, 1000.0f);//Izq,Der,Fondo,Alto,Cercania,Lejania
 	while (!glfwWindowShouldClose(window))
 	{
+		
+		Inputs(window);
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
 
@@ -215,50 +184,87 @@ int main() {
 
 		// Draw our first triangle
 		ourShader.Use();
+		//matrices modelo y vista
 		glm::mat4 model=glm::mat4(1);
 		glm::mat4 view=glm::mat4(1);
 	
-
-	    view = glm::translate(view, glm::vec3(0.0f,0.0f,-15.0f));
-		model = glm::rotate( model, 0.5f, glm::vec3( 1.0f, 1.0f, 0.0f ) ); // use to compare orthographic and perspective projection
-		model = glm::scale(model, glm::vec3(5.5f, 2.5f, 1.5f));
-
-
 		
-	
+		view = glm::translate(view, glm::vec3(movX,movY, movZ));
+//view = glm::rotate(view, glm::radians(rot), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		//view = glm::translate( view, glm::vec3( screenWidth / 2, screenHeight / 2,-700.0f ) ); // use with orthographic projection
-		
+
+		view = glm::rotate(view, glm::radians(rx), glm::vec3(1.0f, 0.0f, 0.0f));
+		view = glm::rotate(view, glm::radians(ry), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::rotate(view, glm::radians(rz), glm::vec3(0.0f,0.0f, 1.0f));
 
 		GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
 		GLint projecLoc = glGetUniformLocation(ourShader.Program, "projection");
-		
+
+
 		glUniformMatrix4fv(projecLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	
+
+
 
 		glBindVertexArray(VAO);
+	
+		model = glm::mat4(1.0f);
+
 		
+		model = glm::scale(model, glm::vec3(1.0f, 0.2f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-.3f, -.3f, -.4f));
+		model = glm::scale(model, glm::vec3(0.2f,0.5f,.2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
-model = glm::mat4(1);
-model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
-glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-glDrawArrays(GL_TRIANGLES, 0, 36);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(.3f, -.3f, -.4f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, .2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
 
-model = glm::mat4(1);
-model = glm::translate(model, glm::vec3(5.0f, 6.0f, 0.0f));
-glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-glDrawArrays(GL_TRIANGLES, 0, 36);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(.3f, -.3f, .4f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, .2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(.3f, -.3f, -.4f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, .2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-.3f, -.3f, .4f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, .2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glBindVertexArray(0);
+
+				
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
-		glBindVertexArray(0);
 	
 	}
 	glDeleteVertexArrays(1, &VAO);
@@ -267,9 +273,47 @@ glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	glfwTerminate();
 	return EXIT_SUCCESS;
+ }
 
-  
+ //movX += 0.08f si la aumentas aumanta la velocidad ocn la que se mueve 
+ void Inputs(GLFWwindow *window) {
+	 if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)  //GLFW_RELEASE
+		 glfwSetWindowShouldClose(window, true);
+	 if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		 movX += 0.08f;
+	 if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		 movX -= 0.08f;
+	 if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+		 movY += 0.08f;
+	 if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+		 movY -= 0.08f;
+	 if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		 movZ -= 0.08f;
+	 if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		 movZ += 0.08f;
+	 if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		 rot += 0.4f;
+	 if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		 rot -= 0.4f;
+	 //x
+	 if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+		 rx += 0.4f;
+	 if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+		 rx -= 0.4f;
+	//y
+	 if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		 ry += 0.4f;
+	 if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		 ry -= 0.4f;
 
-}
+	if (glfwGetKey(window, GLFW_KEY_K)== GLFW_PRESS)
+		 rz += 0.4f;
+	 if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+		 rz-= 0.4f;
+	 
+
+		 
+
+ }
 
 
