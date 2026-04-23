@@ -49,8 +49,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Maquina de estados.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="KeyFrames.cpp">
+      <Filter>Archivos de origen\shader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
